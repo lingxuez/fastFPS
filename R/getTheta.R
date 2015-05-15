@@ -9,7 +9,7 @@ getTheta <- function(v, ndim){
   # if /v_{ndim} - v_{ndim+1} >= 1/, then simply let theta=v_{ndim}-1,
   # will have v_1^+ = ... = v_{ndim}^+ = 1, v_{ndim+1}^+ = ... = v_p^+ = 0
   if (v[ndim]-v[ndim+1] >= 1){
-    return (v[ndim]-1)
+    return (list(theta=v[ndim]-1, last_act_i=ndim))
   }
 
   p = length(v)
@@ -52,5 +52,6 @@ getTheta <- function(v, ndim){
 
   # real theta must be between (theta-m0, theta)
   theta = theta - (ndim-f)/(d-dd+1)
-  return (theta)
+
+  return(list(theta=theta, last_act_i=d))
 }

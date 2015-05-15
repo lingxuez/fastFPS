@@ -4,6 +4,8 @@ library("roxygen2")
 # dependencies
 devtools::use_package("fps")
 devtools::use_package("ggplot2")
+devtools::use_package("Matrix")
+devtools::use_package("rARPACK")
 
 # unit test
 devtools::use_testthat()
@@ -18,26 +20,38 @@ test()
 library(fps)
 rm(list=ls())
 set.seed(100)
-X = matrix(rnorm(900), nrow=10, ncol=90)
+p = 150
+X = matrix(rnorm(p*10), nrow=10, ncol=p)
 S = cov(X)
 ndim = 3
-lambdas = c(1:5)*0.1
-system.time({
-  myResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
-})
+lambdas = sort(quantile(S[lower.tri(S)], probs=c(0.8, 0.85, 0.9, 0.95, 0.99)), decreasing=TRUE)
 
-system.time({
-  trueResult = fps(S, ndim=ndim, lambda=lambdas, verbose=3)
-})
-
-plot(myResult$projection[[3]], trueResult$projection[[3]])
+plot(myResult$projection[[1]], trueResult$projection[[1]])
 plot(myResult$leverage, trueResult$leverage)
 
 abline(0,1 )
 vu = fps(S, ndim=ndim, lambda=lambda, verbose=3)
 
+Rprof("./usr/myFPSprof.out")
+system.time({
+  myResult = myFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
+})
+Rprof(NULL)
+summaryRprof("./usr/myFPSprof.out")
 
 Rprof("./usr/fastFPSprof.out")
-myResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
+system.time({
+  myFastResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=0)
+})
 Rprof(NULL)
 summaryRprof("./usr/fastFPSprof.out")
+
+system.time({
+  trueResult = fps(S, ndim=ndim, lambda=lambdas, verbose=0)
+})
+
+plot(S, myResult$projection[[3]], pch=".")
+abline(v=lambdas[3])
+
+H = myResult$projection[[3]]
+sum(abs(H[lower.tri(H)]) < 1e-3 ) / (90*89/2)

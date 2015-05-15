@@ -1,4 +1,4 @@
-#' The main function that performs fast FPS on a sequence of lambdas
+#' The main function that performs FPS on a sequence of lambdas
 #' @param S Input symmetric matrix
 #' @param ndim The dimension of Fantope
 #' @param lambdas The smoothing parameter, from large to small
@@ -6,7 +6,7 @@
 #' @param eps Accuracy for the stopping criterion
 #' @return A list that contains the following objects:
 
-fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
+myFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
   p <- nrow(S)
   nsol <- length(lambdas)
 
@@ -23,6 +23,9 @@ fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
 
   ## solution path
   for (i in 1:nsol){
+    if (verbose > 0){
+      cat (".")
+    }
 
     ## screening
     act_indices <- findActive(S, ndim, lambdas[i])
@@ -32,7 +35,7 @@ fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
     }
 
     # admm
-    sol_admm <- fastADMM(Sworking, ndim, lambdas[i],
+    sol_admm <- admm(Sworking, ndim, lambdas[i],
                      y0[act_indices, act_indices], w0[act_indices, act_indices], tau)
     y0[act_indices, act_indices] <- sol_admm$y1
     w0[act_indices, act_indices] <- sol_admm$w1
@@ -40,6 +43,7 @@ fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
 
     # store solutions
     projH = matrix(0, p, p)
+    attributes(projH)$dimnames = attributes(S)$dimnames
     projH[act_indices, act_indices] = sol_admm$y1
     solutions$projection[[i]] = projH
 
