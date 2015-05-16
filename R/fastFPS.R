@@ -23,11 +23,14 @@ fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
 
   ## solution path
   for (i in 1:nsol){
+    if (verbose > 0){
+      cat(".")
+    }
 
     ## screening
     act_indices <- findActive(S, ndim, lambdas[i])
     Sworking <- S[act_indices, act_indices]
-    if (verbose > 0){
+    if (verbose > 1){
       cat("(", length(act_indices), "variables)")
     }
 

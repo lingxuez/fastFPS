@@ -2,7 +2,8 @@
 #' @param v A p by 1 vector of sorted eigen values, v_1 >= ... >= v_p
 #' @param ndim The effective dimension desired
 #' @return theta, a threshold such that /sum_i v_i^+ = ndim/,
-#' where x^+ = min(max(x-theta, 0), 1)
+#' where x^+ = min(max(x-theta, 0), 1), and
+#' last_act_i, such that for every j>=last_act_i, v_j^+=0
 
 getTheta <- function(v, ndim){
 

@@ -6,6 +6,8 @@ devtools::use_package("fps")
 devtools::use_package("ggplot2")
 devtools::use_package("Matrix")
 devtools::use_package("rARPACK")
+devtools::use_package("inline")
+devtools::use_package("RcppArmadillo")
 
 # unit test
 devtools::use_testthat()
@@ -19,8 +21,8 @@ test()
 # compare with fps package
 library(fps)
 rm(list=ls())
+p = 300
 set.seed(100)
-p = 150
 X = matrix(rnorm(p*10), nrow=10, ncol=p)
 S = cov(X)
 ndim = 3
@@ -41,13 +43,13 @@ summaryRprof("./usr/myFPSprof.out")
 
 Rprof("./usr/fastFPSprof.out")
 system.time({
-  myFastResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=0)
+  myFastResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
 })
 Rprof(NULL)
 summaryRprof("./usr/fastFPSprof.out")
 
 system.time({
-  trueResult = fps(S, ndim=ndim, lambda=lambdas, verbose=0)
+  trueResult = fps(S, ndim=ndim, lambda=lambdas, verbose=3)
 })
 
 plot(S, myResult$projection[[3]], pch=".")
@@ -55,3 +57,23 @@ abline(v=lambdas[3])
 
 H = myResult$projection[[3]]
 sum(abs(H[lower.tri(H)]) < 1e-3 ) / (90*89/2)
+
+##############
+## Try RcppArmadillo
+##############
+library(inline)
+library(RcppArmadillo)
+g <- cxxfunction ( signature (vs = "numeric"),
+                   plugin = "RcppArmadillo", body = '
+                   arma::vec v = Rcpp::as < arma::vec > (vs);
+                   arma::mat op = v * v. t () ;
+                   double ip = arma::as_scalar ( v.t () * v);
+                   return Rcpp::List::create ( Rcpp::Named ("outer") =op,
+                                                  Rcpp::Named ("inner") = ip );
+                   ')
+
+g(7:11)
+
+
+
+

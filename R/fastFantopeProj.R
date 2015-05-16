@@ -24,6 +24,11 @@ fastFantopeProj <- function(S, ndim){
   }
 
   # reconstruct
-  projH = V %*% diag(newD) %*% t(V)
+  # system.time({
+  #  projH = V %*% diag(newD) %*% t(V)
+  # })
+  # system.time({
+  projH = reconSVDcpp(diag(newD), V)
+  # })
   return(projH)
 }
