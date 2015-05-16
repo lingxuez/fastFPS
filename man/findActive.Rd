@@ -2,9 +2,7 @@
 % Please edit documentation in R/findActive.R
 \name{findActive}
 \alias{findActive}
-\title{Computes a set of indices that contains the active variables of FPS
-If maxoffdiag(i) <= lambda _and_ |{j: diag(j) >= diag(i)}| >= ndim,
-then variable i can be safely eliminated.}
+\title{Computes a set of indices that contains the active variables of FPS}
 \usage{
 findActive(S, ndim, lambda)
 }
@@ -19,7 +17,6 @@ findActive(S, ndim, lambda)
 act_indices, the indices of active set
 }
 \description{
-Computes a set of indices that contains the active variables of FPS
 If maxoffdiag(i) <= lambda _and_ |{j: diag(j) >= diag(i)}| >= ndim,
 then variable i can be safely eliminated.
 }

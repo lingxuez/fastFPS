@@ -1,9 +1,12 @@
 #' The main function that performs FPS on a sequence of lambdas
+#'
+#' This is an exact replication of Vincent Vu's fps package
 #' @param S Input symmetric matrix
 #' @param ndim The dimension of Fantope
 #' @param lambdas The smoothing parameter, from large to small
 #' @param maxiter The maximum interations
 #' @param eps Accuracy for the stopping criterion
+#' @param verbose How many outputs are wanted
 #' @return A list that contains the following objects:
 
 myFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){

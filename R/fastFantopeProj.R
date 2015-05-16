@@ -18,19 +18,16 @@ fastFantopeProj <- function(S, ndim){
 
   # eigen vectors
   if (nActive < p){
-    V = eigs_sym(S, k=nActive, symmetric=TRUE)$vectors
+    V = rARPACK::eigs_sym(S, k=nActive, symmetric=TRUE)$vectors
   } else{
     V = eigen(S, symmetric=TRUE)$vectors
   }
 
   # reconstruct
   # system.time({
-  # projH = V %*% diag(newD) %*% t(V)
+  projH = V %*% diag(newD) %*% t(V)
   # })
   # system.time({
-    projH = reconSVDcpp(diag(newD), V)
+  #  projH = reconSVDcpp(diag(newD), V)
   # })
-  # projH = reconSVD(diag(newD), V)
-
-  # return(projH)
 }

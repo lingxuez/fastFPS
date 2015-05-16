@@ -16,12 +16,12 @@
 #         using namespace arma;
 #         ')
 
-reconSVDcpp <- cppFunction(depends="RcppArmadillo",
-        code = '
-        arma::mat reconSVD(arma::mat & D, arma::mat & V){
-        arma::mat recon = V * D * trans(V);
-        return recon;
-        }
-        ')
+# reconSVDcpp <- cppFunction(depends="RcppArmadillo",
+#         code = '
+#         void reconSVD(arma::mat & X, arma::mat & D, arma::mat & V){
+#         X = V * D * trans(V);
+#         return;
+#         }
+#         ')
 
 

@@ -8,7 +8,7 @@ devtools::use_package("Matrix")
 devtools::use_package("rARPACK")
 devtools::use_package("inline")
 devtools::use_package("RcppArmadillo")
-# devtools::use_rcpp()
+devtools::use_rcpp()
 
 # unit test
 devtools::use_testthat()
@@ -18,6 +18,9 @@ devtools::test()
 devtools::document()
 load_all()
 test()
+check()
+# devtools::build(binary=TRUE)
+devtools::install("/Users/lingxue/Documents/Thesis/Rtools/fastFPS")
 
 # compare with fps package
 library(fps)

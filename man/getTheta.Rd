@@ -13,7 +13,8 @@ getTheta(v, ndim)
 }
 \value{
 theta, a threshold such that /sum_i v_i^+ = ndim/,
-where x^+ = min(max(x-theta, 0), 1)
+where x^+ = min(max(x-theta, 0), 1), and
+last_act_i, such that for every j>=last_act_i, v_j^+=0
 }
 \description{
 A function that calculates the threshold theta for Fantope projection

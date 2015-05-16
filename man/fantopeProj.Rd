@@ -4,10 +4,10 @@
 \alias{fantopeProj}
 \title{A function that projects a matrix to Fantope}
 \usage{
-fantopeProj(Smat, ndim)
+fantopeProj(S, ndim)
 }
 \arguments{
-\item{Smat}{An input p by p symmetric matrix}
+\item{S}{An input p by p symmetric matrix}
 
 \item{ndim}{The dimension of Fantope}
 }

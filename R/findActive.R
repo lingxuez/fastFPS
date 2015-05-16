@@ -1,4 +1,5 @@
 #' Computes a set of indices that contains the active variables of FPS
+#'
 #' If maxoffdiag(i) <= lambda _and_ |{j: diag(j) >= diag(i)}| >= ndim,
 #' then variable i can be safely eliminated.
 #' @param S The input symmetric matrix S

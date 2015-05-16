@@ -4,6 +4,7 @@
 #' @param lambdas The smoothing parameter, from large to small
 #' @param maxiter The maximum interations
 #' @param eps Accuracy for the stopping criterion
+#' @param verbose how many outputs wanted
 #' @return A list that contains the following objects:
 
 fastFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){

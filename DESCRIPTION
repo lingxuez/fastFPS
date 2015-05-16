@@ -1,16 +1,14 @@
 Package: fastFPS
-Title: Modify and speed up Vincent Vu's fps package
+Title: Performs fast Fantope projection and selection
 Version: 0.0.0.9000
 Authors@R: person("Lingxue", "Zhu", , "lingxue.zhu@gmail.com.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph)
+Description: Modify and speed up Vincent Vu's fps package (github.com/vqv/fps)
 Depends: R (>= 3.2.0)
 License: What license is it under?
 LazyData: true
-Imports: 
-    fps,
+Imports:
     ggplot2,
     Matrix,
-    rARPACK,
-    Rcpp
+    rARPACK
 Suggests: testthat
 LinkingTo: Rcpp
