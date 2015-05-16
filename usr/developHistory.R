@@ -8,6 +8,7 @@ devtools::use_package("Matrix")
 devtools::use_package("rARPACK")
 devtools::use_package("inline")
 devtools::use_package("RcppArmadillo")
+# devtools::use_rcpp()
 
 # unit test
 devtools::use_testthat()
@@ -74,6 +75,19 @@ g <- cxxfunction ( signature (vs = "numeric"),
 
 g(7:11)
 
+## Does Rcpp help?
+RreconSVD <- function(D, V){
+  return(V %*% D %*% t(V) )
+}
 
+library(microbenchmark)
+microbenchmark(R=RreconSVD(diag(D), V),
+               RcppCallfromR = reconSVDcpp(diag(D), V),
+               RcppQuote = reconSVD(diag(D), V))
+# Call from R is the slowest
 
-
+load_all()
+lambdas = sort(quantile(S[lower.tri(S)], probs=c(0.8, 0.9, 0.95, 0.99)), decreasing=TRUE)
+microbenchmark(Vu=fps(S, ndim=ndim, lambda=lambdas),
+               my=fastFPS(S, ndim=ndim, lambdas=lambdas),
+               times=20)

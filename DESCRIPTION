@@ -10,5 +10,7 @@ Imports:
     fps,
     ggplot2,
     Matrix,
-    rARPACK
+    rARPACK,
+    Rcpp
 Suggests: testthat
+LinkingTo: Rcpp
