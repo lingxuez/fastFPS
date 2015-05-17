@@ -4,14 +4,14 @@
 \alias{fastFPS}
 \title{The main function that performs fast FPS on a sequence of lambdas}
 \usage{
-fastFPS(S, ndim, lambdas, maxiter = 100, eps = 0.001, verbose = 0)
+fastFPS(S, ndim, lambda, maxiter = 100, eps = 0.001, verbose = 0)
 }
 \arguments{
 \item{S}{Input symmetric matrix}
 
 \item{ndim}{The dimension of Fantope}
 
-\item{lambdas}{The smoothing parameter, from large to small}
+\item{lambda}{The smoothing parameter, from large to small}
 
 \item{maxiter}{The maximum interations}
 

@@ -3,18 +3,18 @@
 #' This is an exact replication of Vincent Vu's fps package
 #' @param S Input symmetric matrix
 #' @param ndim The dimension of Fantope
-#' @param lambdas The smoothing parameter, from large to small
+#' @param lambda The smoothing parameter, from large to small
 #' @param maxiter The maximum interations
 #' @param eps Accuracy for the stopping criterion
 #' @param verbose How many outputs are wanted
 #' @return A list that contains the following objects:
 
-myFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
+myFPS <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
   p <- nrow(S)
-  nsol <- length(lambdas)
+  nsol <- length(lambda)
 
   ## initialization
-  solutions <- list(ndim=ndim, lambda=lambdas,
+  solutions <- list(ndim=ndim, lambda=lambda,
                    projection=vector("list",nsol),
                    leverage=matrix(0, nrow=p, ncol=nsol),
                    L1=rep(0, nsol),
@@ -31,14 +31,14 @@ myFPS <- function(S, ndim, lambdas, maxiter=100, eps=1e-3, verbose=0){
     }
 
     ## screening
-    act_indices <- findActive(S, ndim, lambdas[i])
+    act_indices <- findActive(S, ndim, lambda[i])
     Sworking <- S[act_indices, act_indices]
     if (verbose > 0){
       cat("(", length(act_indices), "variables)")
     }
 
     # admm
-    sol_admm <- admm(Sworking, ndim, lambdas[i],
+    sol_admm <- admm(Sworking, ndim, lambda[i],
                      y0[act_indices, act_indices], w0[act_indices, act_indices], tau)
     y0[act_indices, act_indices] <- sol_admm$y1
     w0[act_indices, act_indices] <- sol_admm$w1

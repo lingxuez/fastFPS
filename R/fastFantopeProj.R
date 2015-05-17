@@ -14,13 +14,14 @@ fastFantopeProj <- function(S, ndim){
   D = Seig$values
   theta = getTheta(D, ndim)
   nActive = theta$last_act_i
-  newD = pmin(pmax(D[1:nActive] - theta$theta, 0), 1)
 
   # eigen vectors
-  if (nActive < p){
+  if (nActive < p & p >= 3){
     V = rARPACK::eigs_sym(S, k=nActive, symmetric=TRUE)$vectors
+    newD = pmin(pmax(D[1:nActive] - theta$theta, 0), 1)
   } else{
     V = eigen(S, symmetric=TRUE)$vectors
+    newD = D
   }
 
   # reconstruct

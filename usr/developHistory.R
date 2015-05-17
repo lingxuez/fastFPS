@@ -40,14 +40,14 @@ vu = fps(S, ndim=ndim, lambda=lambda, verbose=3)
 
 Rprof("./usr/myFPSprof.out")
 system.time({
-  myResult = myFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
+  myResult = myFPS(S, ndim=ndim, lambda=lambdas, verbose=3)
 })
 Rprof(NULL)
 summaryRprof("./usr/myFPSprof.out")
 
 Rprof("./usr/fastFPSprof.out")
 system.time({
-  myFastResult = fastFPS(S, ndim=ndim, lambdas=lambdas, verbose=3)
+  myFastResult = fastFPS(S, ndim=ndim, lambda=lambdas, verbose=3)
 })
 Rprof(NULL)
 summaryRprof("./usr/fastFPSprof.out")
@@ -92,5 +92,5 @@ microbenchmark(R=RreconSVD(diag(D), V),
 load_all()
 lambdas = sort(quantile(S[lower.tri(S)], probs=c(0.8, 0.9, 0.95, 0.99)), decreasing=TRUE)
 microbenchmark(Vu=fps(S, ndim=ndim, lambda=lambdas),
-               my=fastFPS(S, ndim=ndim, lambdas=lambdas),
+               my=fastFPS(S, ndim=ndim, lambda=lambdas),
                times=20)
