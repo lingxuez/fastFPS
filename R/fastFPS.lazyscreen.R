@@ -7,23 +7,29 @@
 #' @param verbose how many outputs wanted
 #' @return A list that contains the following objects:
 
-fastFPS <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
+fastFPS.lazyscreen <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
   p <- nrow(S)
   nsol <- length(lambda)
 
   ## screening
-  act_indicesSeq <- findActiveSeq(S, ndim, lambda)
+  act_indices <- findActive(S, ndim, min(lambda))
+  Sworking <- S[act_indices, act_indices, drop=FALSE]
+  p_act = nrow(Sworking)
+
+  if (verbose > 1){
+    print(paste(length(act_indices), "active variables"))
+  }
 
   ## initialization
   solutions <- list(ndim=ndim, lambda=lambda,
-                   projection=vector("list",nsol),
-                   leverage=matrix(0, nrow=p, ncol=nsol),
-                   L1=rep(0, nsol),
-                   var.explained=rep(0, nsol))
-  projH = matrix(0, p, p)
-  y0 <- matrix(0, p, p) # aux variable
-  w0 <- matrix(0, p, p) # dual variable
-  tau <- max(abs(S)) # admm penalty
+                    projection=vector("list",nsol),
+                    leverage=matrix(0, nrow=p, ncol=nsol),
+                    L1=rep(0, nsol),
+                    var.explained=rep(0, nsol))
+  y0 <- matrix(0, p_act, p_act) # aux variable
+  w0 <- matrix(0, p_act, p_act) # dual variable
+  tau <- max(abs(Sworking)) # admm penalty
+
 
   ## solution path
   for (i in 1:nsol){
@@ -31,24 +37,15 @@ fastFPS <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
       cat(".")
     }
 
-    ## screening
-    act_indices <- act_indicesSeq[[i]]
-    Sworking <- S[act_indices, act_indices, drop=FALSE]
-    if (verbose > 1){
-      print(paste(length(act_indices), "active variables"))
-    }
-
     # admm
-    sol_admm <- fastADMM(Sworking, ndim, lambda[i],
-                   y0[act_indices, act_indices], w0[act_indices, act_indices], tau,
+    sol_admm <- fastADMM(Sworking, ndim, lambda[i], y0, w0, tau,
                    maxiter=maxiter, eps=eps)
-    y0[act_indices, act_indices] <- sol_admm$y1
-    w0[act_indices, act_indices] <- sol_admm$w1
+    y0 <- sol_admm$y1
+    w0 <- sol_admm$w1
     tau <- sol_admm$tau
 
     # store solutions
-    # warning: this based on the fact that lambdas sort from large to small,
-    # so the new act_indices is a superset of the one in previous loop
+    projH = matrix(0, p, p)
     projH[act_indices, act_indices] = sol_admm$y1
     solutions$projection[[i]] = projH
 

@@ -31,19 +31,21 @@ set.seed(100)
 X = matrix(rnorm(p*10), nrow=10, ncol=p)
 S = cov(X)
 ndim = 3
-lambdas = sort(quantile(S[lower.tri(S)], probs=c(0.8, 0.85, 0.9, 0.95, 0.99)), decreasing=TRUE)
+lambdas = quantile(S[lower.tri(S)], probs=c(0.99, 0.95, 0.9, 0.85, 0.8))
 
 checkFpsEqual <- function(values){
-  all.equal(values[[1]]$projection, values[[2]]$projection)
+  all.equal(values[[1]]$projection, values[[2]]$projection,
+            tolerance=1e-2)
 }
 
 load_all()
-microbenchmark(vu <- fps(S, ndim=ndim, lambda=lambdas, verbose=0),
-               my <- fastFPS(S, ndim=ndim, lambda=lambdas, verbose=0),
-               check=checkFpsEqual, times=2)
-
-microbenchmark(vu <- fps(S, ndim=ndim, lambda=lambdas[1], verbose=3),
-               my <- fastFPS(S, ndim=ndim, lambda=lambdas[1], verbose=3),
+test()
+microbenchmark(vu <- fps(S, ndim=ndim, lambda=lambdas, verbose=3, maxiter=500),
+               my <- fastFPS(S, ndim=ndim, lambda=lambdas, verbose=3, maxiter=500),
+               my.lazy <- fastFPS.lazyscreen(S, ndim=ndim, lambda=lambdas, verbose=3, maxiter=500),
+               times=2)
+microbenchmark(vu <- fps(S, ndim=ndim, lambda=lambdas[3], verbose=0),
+               my <- fastFPS(S, ndim=ndim, lambda=lambdas[3], verbose=0),
                check=checkFpsEqual, times=2)
 
 
@@ -57,6 +59,9 @@ Rprof(paste0("./usr/fastFPSprof-", Sys.Date(), ".out"))
 Rprof(NULL)
 summaryRprof(paste0("./usr/fastFPSprof-", Sys.Date(), ".out"))
 
+vuSeq <- fps(S, ndim=ndim, lambda=lambdas, verbose=3, maxiter=500)
+vuSingle <- fps(S, ndim=ndim, lambda=lambdas[5], verbose=3, maxiter=500)
+all.equal(vuSeq$projection[[5]], vuSingle$projection[[1]])
 
 # ##############
 # ## Try RcppArmadillo
@@ -91,4 +96,24 @@ summaryRprof(paste0("./usr/fastFPSprof-", Sys.Date(), ".out"))
 #                my=fastFPS(S, ndim=ndim, lambda=lambdas),
 #                times=20)
 
+load_all()
+myInit0 <- fastFPS(S, ndim=ndim, lambda=lambdas[5], maxiter=500, verbose=3)
+load_all()
+myInit1 <- fastFPS(S, ndim=ndim, lambda=lambdas[5], maxiter=1000, verbose=3)
+all.equal(myInit0$projection[[1]], myInit1$projection[[1]])
+plot(myInit0$projection[[1]], myInit1$projection[[1]])
+
+system.time({
+  findActiveSeq(S, ndim, lambda)
+})
+
+
+x <- 1:5
+x[NA]
+x[NA_integer_]
+
+x <- outer(1:5, 1:5, FUN = "*")
+x[upper.tri(x)]
+x[cbind(1:5, 1:5)]
+is.na(x)
 
