@@ -10,16 +10,16 @@
 findActive <- function(S, ndim, lambda){
   p = nrow(S)
   Sdiag <- diag(S)
-  Soff <- S
-  diag(Soff) <- NA
-  Smaxoff = apply(Soff, 1, max, na.rm=TRUE)
+  S.abs.off <- abs(S)
+  diag(S.abs.off) <- NA
+  Smaxoff = apply(S.abs.off, 1, max, na.rm=TRUE)
 
   # sort (diag, maxoffdiag) in lexicographical and descending order
   Spair = cbind(index=c(1:p), Sdiag, Smaxoff)
   lex.order <- order(Sdiag, Smaxoff, decreasing=TRUE)
   Spair <- Spair[lex.order, ]
-  # active set contains those with: j<ndim or maxoff > lambda
-  act_rows <- which(c(1:p) < ndim | Spair[, "Smaxoff"] > lambda)
+  # active set contains those with: j<=ndim or maxoff > lambda
+  act_rows <- which(c(1:p) <= ndim | Spair[, "Smaxoff"] > lambda)
   act_indices = Spair[act_rows, "index"]
 
   return(act_indices)

@@ -4,7 +4,7 @@
 #' @return projH The projection matrix of input Smat
 
 fastFantopeProj <- function(S, ndim){
-  p = nrow(S)
+  p = NROW(S)
   # Zero elements in S?
 
   # SVD: only values
@@ -26,9 +26,15 @@ fastFantopeProj <- function(S, ndim){
 
   # reconstruct
   # system.time({
-  projH = V %*% diag(newD) %*% t(V)
+  if ( NROW(V)==1 & NCOL(V)==1){
+    projH = V * newD * V
+  } else {
+    projH = V %*% diag(newD) %*% t(V)
+  }
   # })
   # system.time({
   #  projH = reconSVDcpp(diag(newD), V)
   # })
+
+  return(projH)
 }

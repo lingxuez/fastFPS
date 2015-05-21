@@ -6,14 +6,14 @@
 #' last_act_i, such that for every j>=last_act_i, v_j^+=0
 
 getTheta <- function(v, ndim){
+  p = length(v)
 
   # if /v_{ndim} - v_{ndim+1} >= 1/, then simply let theta=v_{ndim}-1,
   # will have v_1^+ = ... = v_{ndim}^+ = 1, v_{ndim+1}^+ = ... = v_p^+ = 0
-  if (v[ndim]-v[ndim+1] >= 1){
-    return (list(theta=v[ndim]-1, last_act_i=ndim))
+  if ( p <= ndim | v[ndim]-v[ndim+1] >= 1){
+    return (list(theta=v[ndim]-1, last_act_i= min(ndim, p)))
   }
 
-  p = length(v)
   v1 = c(v, v[p]-ndim/p) # v_p - ndim/p is a lowerbound for theta
 
   # Search whether theta=v_i for some i
@@ -37,7 +37,7 @@ getTheta <- function(v, ndim){
   }
 
   if (fnew == ndim){
-    return (theta)
+    return (list(theta=theta, last_act_i=dnew))
   }
 
   # else, theta must be between (v1[d+1], v1[d]), where dnew=d+1
