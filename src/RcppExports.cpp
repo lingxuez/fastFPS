@@ -7,12 +7,12 @@
 using namespace Rcpp;
 
 // fastFantopeProjCpp
-arma::sp_mat fastFantopeProjCpp(arma::sp_mat& S, int& ndim);
+arma::mat fastFantopeProjCpp(arma::mat& S, int& ndim);
 RcppExport SEXP fastFPS_fastFantopeProjCpp(SEXP SSEXP, SEXP ndimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::sp_mat& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
     Rcpp::traits::input_parameter< int& >::type ndim(ndimSEXP);
     __result = Rcpp::wrap(fastFantopeProjCpp(S, ndim));
     return __result;
