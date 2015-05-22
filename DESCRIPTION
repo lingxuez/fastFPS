@@ -9,6 +9,8 @@ LazyData: true
 Imports:
     ggplot2,
     Matrix,
-    rARPACK
+    rARPACK,
+    Rcpp,
+    RcppArmadillo
 Suggests: testthat
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo

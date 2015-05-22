@@ -1,4 +1,5 @@
 #' The main function that performs fast FPS on a sequence of lambdas
+#'
 #' @param S Input symmetric matrix
 #' @param ndim The dimension of Fantope
 #' @param lambda The smoothing parameter, from large to small
@@ -11,8 +12,8 @@ fastFPS <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
   p <- nrow(S)
   nsol <- length(lambda)
 
-  ## screening
-  act_indicesSeq <- findActiveSeq(S, ndim, lambda)
+  ## screening prepare: sort pairs (Sdiag, maxoffdiag)
+  Spair <- findActivePrep(S, ndim)
 
   ## initialization
   solutions <- list(ndim=ndim, lambda=lambda,
@@ -32,8 +33,10 @@ fastFPS <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
     }
 
     ## screening
-    act_indices <- act_indicesSeq[[i]]
+    act_rows <- which(c(1:p) <= ndim | Spair[, "Smaxoff"] > lambda[i])
+    act_indices <- Spair[act_rows, "index"]
     Sworking <- S[act_indices, act_indices, drop=FALSE]
+
     if (verbose > 1){
       print(paste(length(act_indices), "active variables"))
     }
