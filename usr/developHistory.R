@@ -164,6 +164,10 @@ microbenchmark(soft <- softThreshold(S, lambda),
                softcpp <- softThresholdCpp(S, lambda))
 all.equal(soft, softcpp)
 
+microbenchmark(eigcpp <- eigVals(S),
+               eigR <- eigen(S, symmetric=TRUE, only.values=TRUE)$values)
+all.equal(sort(as.numeric(eigcpp)), sort(eigR))
+
 ## workflow to build Rcpp functions:
 ## cmd+shift+D: document
 ## build&load
