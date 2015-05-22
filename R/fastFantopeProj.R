@@ -5,7 +5,6 @@
 
 fastFantopeProj <- function(S, ndim){
   p = nrow(S)
-  # Zero elements in S?
 
   # SVD: only values
   Seig = eigen(S, symmetric=TRUE, only.values=TRUE)

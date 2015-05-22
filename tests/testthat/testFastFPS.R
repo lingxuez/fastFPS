@@ -11,7 +11,9 @@ test_that("fastFPS() works for sample covariance matrix of X~N(0, I_p),
   vu <- fps(S, ndim=ndim, lambda=lambda)
   my <- fastFPS(S, ndim=ndim, lambda=lambda)
   my.lazy <- fastFPS.lazyscreen(S, ndim=ndim, lambda=lambda)
+  my.cpp <- fastFPS_cpp(S, ndim=ndim, lambda=lambda)
 
   all.equal(vu$projection, my$projection, tolerance=0.01)
   all.equal(vu$projection, my.lazy$projection, tolerance=0.01)
+  all.equal(vu$projection, my.cpp$projection, tolerance=0.01)
 })

@@ -5,7 +5,3 @@ softThresholdCpp <- function(x, lambda) {
     .Call('fastFPS_softThresholdCpp', PACKAGE = 'fastFPS', x, lambda)
 }
 
-timesTwo <- function(x) {
-    .Call('fastFPS_timesTwo', PACKAGE = 'fastFPS', x)
-}
-

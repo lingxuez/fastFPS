@@ -126,8 +126,25 @@ all.equal(myInit0$projection[[1]], myInit1$projection[[1]])
 plot(myInit0$projection[[1]], myInit1$projection[[1]])
 
 system.time({
+  vu <- fps(S, ndim=ndim, lambda=lambdas, maxiter=500)
+})
+
+system.time({
   my <- fastFPS(S, ndim=ndim, lambda=lambdas, maxiter=500)
 })
+
+system.time({
+  my.lazy <- fastFPS.lazyscreen(S, ndim=ndim, lambda=lambdas, maxiter=500)
+})
+
+system.time({
+  my.cpp <- fastFPS_cpp(S, ndim=ndim, lambda=lambdas, maxiter=500)
+})
+
+all.equal(my$projection, my.lazy$projection, tolerance=0.01)
+all.equal(my$projection, my.cpp$projection, tolerance=0.01)
+all.equal(my.lazy$projection, my.cpp$projection)
+all.equal(vu$projection, my.lazy$projection, 0.001)
 
 
 ##############

@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 using namespace Rcpp;
 
-// Proximal operator for \lambda |x|_1
+// Proximal operator for \lambda |x|_1 (from Vu's package)
 struct SoftThresholdOp
 {
   SoftThresholdOp(const double& z) : z(z) {}
