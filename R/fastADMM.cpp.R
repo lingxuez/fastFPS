@@ -13,38 +13,37 @@
 #' @param tauStep Step size to adjust tau
 #' @return H The global solution matrix H for the Fantope problem
 
-fastADMM_cpp <- function(S, ndim, lambda, y0, w0, tau,
+fastADMM.cpp <- function(S, ndim, lambda, y, w, tau,
                      tauStep=2, maxiter=100, eps=10^(-3)){
   eps = sqrt(ndim)*eps # stopping criterion
 
-  niter = 0
-  maxnorm = eps+1
-  while (niter < maxiter && maxnorm > eps){
+  for (niter in 1:maxiter){
+    y_old = y
+
     # update
-    H = fastFantopeProj(y0-w0+S/tau, ndim)
-    y1 = softThresholdCpp(H+w0, lambda/tau)
-    w1 = w0 + H - y1
+    H = fastFantopeProj(y-w+S/tau, ndim)
+    y = softThresholdCpp(H+w, lambda/tau)
+    w = w + H - y
 
     # stopping criterion
-    normr1 = Matrix::norm(H-y1, "F")
-    norms1 = tau * Matrix::norm((y0-y1), "F")
-    maxnorm = max(normr1, norms1)
-    niter = niter+1
+    normr1 = Matrix::norm(H-y, "F")
+    norms1 = tau * Matrix::norm(y-y_old, "F")
+    if (normr1 < eps & norms1 < eps){
+      break
+    }
 
     # update
-    y0 = y1
     if (normr1 > 10*norms1){
       tau = tau*tauStep
-      w0 = w1/tauStep
+      w = w/tauStep
     } else if (norms1 > 10*normr1){
       tau = tau/tauStep
-      w0 = w1*tauStep
-    } else{
-      w0 = w1
+      w = w*tauStep
     }
+
   }
 
-  return(list(y1=y1, w1=w1, tau=tau, niter=niter))
+  return(list(y=y, w=w, tau=tau, niter=niter))
 }
 
 

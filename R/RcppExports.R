@@ -5,6 +5,14 @@ fastFantopeProjCpp <- function(S, ndim) {
     .Call('fastFPS_fastFantopeProjCpp', PACKAGE = 'fastFPS', S, ndim)
 }
 
+tryEigs <- function(S, ndim) {
+    .Call('fastFPS_tryEigs', PACKAGE = 'fastFPS', S, ndim)
+}
+
+sparse <- function(A) {
+    .Call('fastFPS_sparse', PACKAGE = 'fastFPS', A)
+}
+
 softThresholdCpp <- function(x, lambda) {
     .Call('fastFPS_softThresholdCpp', PACKAGE = 'fastFPS', x, lambda)
 }

@@ -18,6 +18,29 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// tryEigs
+arma::sp_mat tryEigs(arma::sp_mat S, int ndim);
+RcppExport SEXP fastFPS_tryEigs(SEXP SSEXP, SEXP ndimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::sp_mat >::type S(SSEXP);
+    Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
+    __result = Rcpp::wrap(tryEigs(S, ndim));
+    return __result;
+END_RCPP
+}
+// sparse
+arma::sp_mat sparse(arma::sp_mat A);
+RcppExport SEXP fastFPS_sparse(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::sp_mat >::type A(ASEXP);
+    __result = Rcpp::wrap(sparse(A));
+    return __result;
+END_RCPP
+}
 // softThresholdCpp
 arma::mat softThresholdCpp(arma::mat& x, double& lambda);
 RcppExport SEXP fastFPS_softThresholdCpp(SEXP xSEXP, SEXP lambdaSEXP) {

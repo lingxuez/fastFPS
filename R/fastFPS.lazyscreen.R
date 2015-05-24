@@ -14,7 +14,7 @@ fastFPS.lazyscreen <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0
   ## screening
   act_indices <- findActive(S, ndim, min(lambda))
   Sworking <- S[act_indices, act_indices, drop=FALSE]
-  p_act = nrow(Sworking)
+  p_act = length(act_indices)
 
   if (verbose > 1){
     print(paste(length(act_indices), "active variables"))
@@ -26,10 +26,9 @@ fastFPS.lazyscreen <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0
                     leverage=matrix(0, nrow=p, ncol=nsol),
                     L1=rep(0, nsol),
                     var.explained=rep(0, nsol))
-  y0 <- matrix(0, p_act, p_act) # aux variable
-  w0 <- matrix(0, p_act, p_act) # dual variable
-  tau <- max(abs(Sworking)) # admm penalty
-
+  y <- matrix(0, p_act, p_act) # aux variable
+  w <- matrix(0, p_act, p_act) # dual variable
+  tau <- base::norm(Sworking,"m") # admm penalty
 
   ## solution path
   for (i in 1:nsol){
@@ -38,20 +37,20 @@ fastFPS.lazyscreen <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0
     }
 
     # admm
-    sol_admm <- fastADMM(Sworking, ndim, lambda[i], y0, w0, tau,
+    sol_admm <- fastADMM(Sworking, ndim, lambda[i], y, w, tau,
                    maxiter=maxiter, eps=eps)
-    y0 <- sol_admm$y1
-    w0 <- sol_admm$w1
+    y <- sol_admm$y1
+    w <- sol_admm$w1
     tau <- sol_admm$tau
 
     # store solutions
     projH = matrix(0, p, p)
-    projH[act_indices, act_indices] = sol_admm$y1
+    projH[act_indices, act_indices] = y
     solutions$projection[[i]] = projH
 
     solutions$leverage[,i] = diag(projH)
-    solutions$L1[i] = sum(rowSums(abs(sol_admm$y1))) # |H|_1
-    solutions$var.explained[i] = sum(rowSums(Sworking * sol_admm$y1)) # <S, H>
+    solutions$L1[i] = sum(rowSums(abs(y))) # |H|_1
+    solutions$var.explained[i] = sum(rowSums(Sworking * y)) # <S, H>
 
     if (verbose > 1){
       cat(sol_admm$niter)

@@ -7,10 +7,9 @@ fastFantopeProj <- function(S, ndim){
   p = nrow(S)
 
   # SVD: only values
-  Seig = eigen(S, symmetric=TRUE, only.values=TRUE)
+  D = eigen(S, symmetric=TRUE, only.values=TRUE)$values
 
   # thres eigen values
-  D = Seig$values
   theta = getTheta(D, ndim)
   nActive = theta$last_act_i
 
@@ -24,16 +23,11 @@ fastFantopeProj <- function(S, ndim){
   }
 
   # reconstruct
-  # system.time({
   if (p==1){
     projH = V * newD * V
   } else {
     projH = V %*% diag(newD) %*% t(V)
   }
-  # })
-  # system.time({
-  #  projH = reconSVDcpp(diag(newD), V)
-  # })
 
   return(projH)
 }

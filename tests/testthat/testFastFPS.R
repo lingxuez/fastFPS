@@ -8,7 +8,7 @@ test_that("fastFPS() works for sample covariance matrix of X~N(0, I_p),
   S = cov(X)
   ndim = 3
   lambda = quantile(abs(S), probs=c(0.95, 0.9, 0.85, 0.8))
-  vu <- fps(S, ndim=ndim, lambda=lambda)
+  vu <- fps::fps(S, ndim=ndim, lambda=lambda)
   my <- fastFPS(S, ndim=ndim, lambda=lambda)
   my.lazy <- fastFPS.lazyscreen(S, ndim=ndim, lambda=lambda)
   my.cpp <- fastFPS_cpp(S, ndim=ndim, lambda=lambda)

@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+// [[ Rcpp :: depends ( RcppArmadillo )]]
 using namespace Rcpp;
 
 int simplexCpp(arma::vec& eigval, int ndim){
@@ -35,5 +36,21 @@ arma::mat fastFantopeProjCpp(arma::mat& S, int& ndim) {
   return S;
 }
 
+
+// [[Rcpp::export]]
+arma::sp_mat tryEigs(arma::sp_mat S, int ndim){
+  // arma::vec eigval;
+  arma::mat eigvec;
+  // arma::vec eigval = eigs_sym( S, 1 );
+
+  return S;
+}
+
+// [[Rcpp::export]]
+arma::sp_mat sparse( arma::sp_mat A ){
+    A(0,0) = 1;
+    A(1,0) = 2;
+    return A ;
+}
 
 

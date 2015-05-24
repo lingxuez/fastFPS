@@ -7,7 +7,7 @@
 #' @param verbose how many outputs wanted
 #' @return A list that contains the following objects:
 
-fastFPS_cpp <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
+fastFPS.cpp <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
   p <- nrow(S)
   nsol <- length(lambda)
 
@@ -26,8 +26,8 @@ fastFPS_cpp <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
                     leverage=matrix(0, nrow=p, ncol=nsol),
                     L1=rep(0, nsol),
                     var.explained=rep(0, nsol))
-  y0 <- matrix(0, p_act, p_act) # aux variable
-  w0 <- matrix(0, p_act, p_act) # dual variable
+  y <- matrix(0, p_act, p_act) # aux variable
+  w <- matrix(0, p_act, p_act) # dual variable
   tau <- max(abs(Sworking)) # admm penalty
 
 
@@ -38,20 +38,20 @@ fastFPS_cpp <- function(S, ndim, lambda, maxiter=100, eps=1e-3, verbose=0){
     }
 
     # admm
-    sol_admm <- fastADMM_cpp(Sworking, ndim, lambda[i], y0, w0, tau,
+    sol_admm <- fastADMM.cpp(Sworking, ndim, lambda[i], y, w, tau,
                    maxiter=maxiter, eps=eps)
-    y0 <- sol_admm$y1
-    w0 <- sol_admm$w1
+    y <- sol_admm$y
+    w <- sol_admm$w
     tau <- sol_admm$tau
 
     # store solutions
     projH = matrix(0, p, p)
-    projH[act_indices, act_indices] = sol_admm$y1
+    projH[act_indices, act_indices] = y
     solutions$projection[[i]] = projH
 
     solutions$leverage[,i] = diag(projH)
-    solutions$L1[i] = sum(rowSums(abs(sol_admm$y1))) # |H|_1
-    solutions$var.explained[i] = sum(rowSums(Sworking * sol_admm$y1)) # <S, H>
+    solutions$L1[i] = sum(rowSums(abs(y))) # |H|_1
+    solutions$var.explained[i] = sum(rowSums(Sworking * y)) # <S, H>
 
     if (verbose > 1){
       cat(sol_admm$niter)

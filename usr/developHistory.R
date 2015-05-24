@@ -23,7 +23,7 @@ load_all()
 test()
 check()
 # devtools::build(binary=TRUE)
-devtools::install("/Users/lingxue/Documents/Thesis/Rtools/fastFPS")
+devtools::install()
 
 # compare with fps package
 rm(list=ls())
@@ -172,14 +172,22 @@ projH <- fastFantopeProjCpp(Ss, 3)
 ## build&load
 ## try it
 
-g <- cxxfunction( signature (vs = "numeric"),
+############
+## make eigs work
+###########
+library(RcppArmadillo)
+library(Rcpp)
+g <- cxxfunction( signature (Sin = "numeric"),
                    plugin = "RcppArmadillo", body = '
-                   arma::vec v = Rcpp::as < arma::vec > (vs);
+                   arma::mat S = Rcpp::as < arma::mat > (Sin);
                    arma::mat op = v * v. t () ;
                    double ip = arma::as_scalar ( v.t () * v);
                    return Rcpp::List::create ( Rcpp::Named ("outer") =op,
                                                   Rcpp::Named ("inner") = ip );
                    ')
+g(7:11)
 
 
 RcppArmadillo.package.skeleton(name="fastFPScpp")
+
+sourceCpp("./src/fastFantopeProjCpp.cpp")
