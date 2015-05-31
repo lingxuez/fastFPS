@@ -25,23 +25,26 @@ rm(list=ls())
 data(ivoryCorr)
 
 load_all()
-lambdas = quantile(abs(D)[lower.tri(D)], probs=c(0.99, 0.95, 0.9, 0.85, 0.8))
+lambdas = quantile(abs(D.cor)[lower.tri(D.cor)], probs=c(0.99, 0.95, 0.9, 0.85, 0.8))
 ndim=1
-vuFPS <- fps(D, ndim=ndim, lambda=lambdas[2], verbose=3)
-myFPS.lazy <- fastFPS.lazyscreen(D, ndim=ndim, lambda=lambdas[2], verbose=3)
-plot(vuFPS$projection[[1]], myFPS.lazy$projection[[1]])
+system.time({
+  vuFPS <- fps(D.cor, ndim=ndim, lambda=lambdas)
+})
+system.time({
+  myFPS.lazy <- fastFPS.lazyscreen(D.cor, ndim=ndim, lambda=lambdas)
+})
+system.time({
+  myFPS.cpp <- fastFPS.cpp(D.cor, ndim=ndim, lambda=lambdas)
+})
+system.time({
+  myFPS <- fastFPS(D.cor, ndim=ndim, lambda=lambdas)
+})
+
+plot(vuFPS$projection[[3]], myFPS$projection[[3]])
+abline(0,1)
+sort(vuFPS$projection[[1]], decreasing=TRUE)[1:5]
 plot(vuFPS$leverage[,1], myFPS.lazy$leverage[,1])
-
-system.time({
-  vuFPS <- fps(cor(X.case), ndim=ndim, lambda=lambdas[2])
-})
-system.time({
-  myFPS.lazy <- fastFPS.lazyscreen(cor(X.case), ndim=ndim, lambda=lambdas[2])
-})
-system.time({
-  myFPS.cpp <- fastFPS.cpp(cor(X.case), ndim=ndim, lambda=lambdas[2])
-})
-
+abline(0,1)
 
 
 ## Is it because D is not positive definite?
@@ -68,6 +71,17 @@ abline(0,1)
 all.equal(vuFPS$projection, myFPS$projection)
 
 
-vuFPS.s <- fps(Dpos, ndim=ndim, lambda=lambdas[5], verbose=3)
-myFPS.lazy.s <- fastFPS.lazyscreen(Dpos, ndim=ndim, lambda=lambdas[5], verbose=3)
+system.time({
+  vuFPS <- fps(cor(X.case), ndim=ndim, lambda=lambdas[2:5], verbose=3)
+})
+system.time({
+  myFPS.lazy <- fastFPS.lazyscreen(cor(X.case), ndim=ndim, lambda=lambdas[2:5], verbose=3)
+})
+system.time({
+  myFPS.cpp <- fastFPS.cpp(cor(X.case), ndim=ndim, lambda=lambdas[2:5])
+})
+plot(vuFPS$projection[[1]], myFPS.cpp$projection[[1]])
 
+v = sort(rnorm(100, sd=0.1), decreasing=TRUE)
+microbenchmark(mytheta <- getTheta(v, 20),
+               vusimplex <- simplex(v, 20))

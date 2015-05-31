@@ -15,11 +15,11 @@ fastFantopeProj <- function(S, ndim){
 
   # eigen vectors
   if (nActive < p & p >= 3){
-    V = rARPACK::eigs_sym(S, k=nActive, symmetric=TRUE)$vectors
+    V = rARPACK::eigs_sym(S, k=nActive, which="LA")$vectors
     newD = pmin(pmax(D[1:nActive] - theta$theta, 0), 1)
   } else{
     V = eigen(S, symmetric=TRUE)$vectors
-    newD = D
+    newD = pmin(pmax(D - theta$theta, 0), 1)
   }
 
   # reconstruct

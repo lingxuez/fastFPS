@@ -29,15 +29,15 @@ fastADMM <- function(S, ndim, lambda, y, w, tau,
     # stopping criterion
     normr1 = Matrix::norm(H-y, "F")
     norms1 = tau * Matrix::norm(y-y_old, "F")
-    if (normr1 < eps & norms1 < eps){
+    if (normr1 < eps && norms1 < eps){
       break
     }
 
     # update
-    if (normr1 > 10*norms1){
+    if (normr1 > (10*norms1) ){
       tau = tau*tauStep
       w = w/tauStep
-    } else if (norms1 > 10*normr1){
+    } else if (norms1 > (10*normr1) ){
       tau = tau/tauStep
       w = w*tauStep
     }

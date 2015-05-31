@@ -4,7 +4,7 @@
 \alias{fastADMM}
 \title{Performs ADMM to solve FPS, using fast fantope projection}
 \usage{
-fastADMM(S, ndim, lambda, y0, w0, tau, tauStep = 2, maxiter = 100,
+fastADMM(S, ndim, lambda, y, w, tau, tauStep = 2, maxiter = 100,
   eps = 10^(-3))
 }
 \arguments{
@@ -14,10 +14,6 @@ fastADMM(S, ndim, lambda, y0, w0, tau, tauStep = 2, maxiter = 100,
 
 \item{lambda}{The smoothing parameter}
 
-\item{y0}{Initialized value for aux variable}
-
-\item{w0}{Initialized value for dual variable}
-
 \item{tau}{ADMM penalty}
 
 \item{tauStep}{Step size to adjust tau}
@@ -25,6 +21,10 @@ fastADMM(S, ndim, lambda, y0, w0, tau, tauStep = 2, maxiter = 100,
 \item{maxiter}{The maximum interations}
 
 \item{eps}{Accuracy for the stopping criterion}
+
+\item{y0}{Initialized value for aux variable}
+
+\item{w0}{Initialized value for dual variable}
 }
 \value{
 H The global solution matrix H for the Fantope problem
